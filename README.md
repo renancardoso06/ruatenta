@@ -1,17 +1,35 @@
-# ruatenta
+# RuAtenta
 
-A new Flutter project.
+App para o cidadão registrar problemas da rua, como buraco, poste apagado, lixo, calçada quebrada e alagamento, e acompanhar até serem resolvidos.
 
-## Getting Started
+Projeto da Global Solution 2 (CitizenTech) da FIAP, ligado às ODS 11 (cidades sustentáveis) e 16 (instituições eficazes).
 
-This project is a starting point for a Flutter application.
+**Grupo:** Renan Cardoso da Costa (RM 557918) e Victor Vieira Borges (RM 557922) , turma 3SIOA
 
-A few resources to get you started if this is your first Flutter project:
+## O que o app faz
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Mostra no mapa as ocorrências da região
+- Registra uma ocorrência com foto e local, e gera um protocolo (ex.: RUA-2026-000001)
+- Permite acompanhar o andamento pelo protocolo: aberta, em análise, em andamento, resolvida
+- Deixa outras pessoas apoiarem a ocorrência. Com 5 apoios a prioridade sobe para média, com 10 para alta
+- Tem uma tela de indicadores por categoria, com prazo e tempo médio de resolução
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Como rodar
+```
+
+flutter pub get
+
+flutter run
+
+flutter test
+
+```
+O banco Oracle está na pasta `sql/` (tabelas, package PKG_RUATENTA e triggers). O script `00_run_all.sql` roda tudo na ordem.
+
+## Limitações
+
+- O app guarda os dados no próprio aparelho e ainda não conversa com o Oracle. O próximo passo seria uma API entre os dois.
+- O botão "Modo demonstração" simula a resposta do órgão responsável.
+- Não há login: cada aparelho tem um identificador anônimo.
+
+A documentação completa está em `docs/`.
