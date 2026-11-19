@@ -4,8 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ocorrencia.dart';
 
-/// Tudo o que o app persiste: ocorrências, contador de protocolo e o
-/// identificador anônimo do aparelho (o app não exige login).
 class DadosApp {
   DadosApp({
     required this.ocorrencias,
@@ -20,9 +18,6 @@ class DadosApp {
   final bool demoCarregada;
 }
 
-/// Contrato de persistência. O app usa a implementação local; a camada Oracle
-/// (pasta sql/) modela o mesmo domínio para um back-end futuro, sem mudar as
-/// telas, apenas trocando esta implementação.
 abstract class OcorrenciaRepository {
   Future<DadosApp> carregar();
   Future<void> salvar(DadosApp dados);
@@ -53,7 +48,7 @@ class LocalOcorrenciaRepository implements OcorrenciaRepository {
         demoCarregada: json['demoCarregada'] as bool? ?? false,
       );
     } catch (_) {
-      // dado corrompido: começa limpo em vez de travar o app
+      // Dados corrompidos não devem impedir a abertura do app.
       return DadosApp(
         ocorrencias: [],
         sequencia: 0,
@@ -77,7 +72,6 @@ class LocalOcorrenciaRepository implements OcorrenciaRepository {
   }
 }
 
-/// Implementação em memória, usada nos testes automatizados.
 class MemoriaOcorrenciaRepository implements OcorrenciaRepository {
   DadosApp? _dados;
 

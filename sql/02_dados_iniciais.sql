@@ -1,9 +1,3 @@
---------------------------------------------------------------------------------
--- RuAtenta - Script 2: dados de referencia (orgaos, categorias, cidadaos)
--- As ocorrencias NAO sao inseridas aqui: sao criadas pela procedure
--- PR_REGISTRAR_OCORRENCIA, para que protocolo, historico e prioridade sigam as
--- regras reais do sistema.
---------------------------------------------------------------------------------
 INSERT INTO ORGAOS (ID, NOME) VALUES (1, 'Zeladoria Urbana');
 INSERT INTO ORGAOS (ID, NOME) VALUES (2, 'Iluminacao Publica');
 INSERT INTO ORGAOS (ID, NOME) VALUES (3, 'Limpeza Urbana');

@@ -1,22 +1,19 @@
---------------------------------------------------------------------------------
--- Executa toda a camada Oracle em ordem (rodar dentro da pasta sql/):
---   sqlplus RUATENTA_APP/<senha>@//localhost:1521/XEPDB1 @00_run_all.sql
---------------------------------------------------------------------------------
+-- Execute este script de dentro da pasta sql/.
 SET ECHO OFF
 SET DEFINE OFF
 SET SERVEROUTPUT ON SIZE UNLIMITED
 WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 
-PROMPT >>> 01 tabelas
+PROMPT 01 tabelas
 @01_ddl.sql
-PROMPT >>> 02 dados iniciais
+PROMPT 02 dados iniciais
 @02_dados_iniciais.sql
-PROMPT >>> 03 package PKG_RUATENTA
+PROMPT 03 package PKG_RUATENTA
 @03_package.sql
-PROMPT >>> 04 triggers
+PROMPT 04 triggers
 @04_triggers.sql
 
-PROMPT >>> verificacao de compilacao (nenhum objeto pode estar invalido)
+PROMPT Verificacao de compilacao
 DECLARE
     v_qtd NUMBER;
 BEGIN
@@ -31,6 +28,6 @@ BEGIN
 END;
 /
 
-PROMPT >>> 05 testes
+PROMPT 05 testes
 @05_teste.sql
 EXIT

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Etapas do atendimento. Espelha o CHECK de OCORRENCIAS.STATUS no Oracle.
 enum StatusOcorrencia {
   aberta('ABERTA', 'Aberta'),
   emAnalise('EM_ANALISE', 'Em análise'),
@@ -9,21 +8,17 @@ enum StatusOcorrencia {
 
   const StatusOcorrencia(this.codigo, this.rotulo);
 
-  /// Valor gravado no banco (igual ao usado no Oracle).
   final String codigo;
   final String rotulo;
 
-  /// Próxima etapa do fluxo, ou null se já está resolvida.
-  StatusOcorrencia? get proximo =>
-      index + 1 < StatusOcorrencia.values.length
-          ? StatusOcorrencia.values[index + 1]
-          : null;
+  StatusOcorrencia? get proximo => index + 1 < StatusOcorrencia.values.length
+      ? StatusOcorrencia.values[index + 1]
+      : null;
 
   static StatusOcorrencia deCodigo(String codigo) =>
       StatusOcorrencia.values.firstWhere((s) => s.codigo == codigo);
 }
 
-/// Espelha OCORRENCIAS.PRIORIDADE.
 enum Prioridade {
   baixa('BAIXA', 'Baixa'),
   media('MEDIA', 'Média'),
@@ -37,7 +32,6 @@ enum Prioridade {
       Prioridade.values.firstWhere((p) => p.codigo == codigo);
 }
 
-/// Tipo de problema. Espelha as tabelas CATEGORIAS e ORGAOS.
 class Categoria {
   const Categoria({
     required this.id,
@@ -109,7 +103,6 @@ class Categoria {
       todas.firstWhere((c) => c.id == id, orElse: () => todas.first);
 }
 
-/// Linha da linha do tempo. Espelha HISTORICO_OCORRENCIA.
 class EventoHistorico {
   const EventoHistorico({
     required this.statusAntigo,
@@ -141,7 +134,6 @@ class EventoHistorico {
       );
 }
 
-/// Problema urbano registrado. Espelha a tabela OCORRENCIAS.
 class Ocorrencia {
   const Ocorrencia({
     required this.id,
@@ -246,7 +238,6 @@ class Ocorrencia {
       );
 }
 
-/// Linha do painel de indicadores (equivale a PR_INDICADORES_POR_CATEGORIA).
 class IndicadorCategoria {
   const IndicadorCategoria({
     required this.categoria,

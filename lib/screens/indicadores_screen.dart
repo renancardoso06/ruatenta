@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../state/ocorrencias_controller.dart';
 
-/// Funcionalidade 4: painel de indicadores (transparência para o cidadão).
 class IndicadoresScreen extends StatelessWidget {
   const IndicadoresScreen({super.key});
 
@@ -104,11 +103,11 @@ class IndicadoresScreen extends StatelessWidget {
             await controller.reiniciarDemonstracao();
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Dados de demonstração recarregados.')),
+              const SnackBar(content: Text('Dados recarregados.')),
             );
           },
           icon: const Icon(Icons.restart_alt),
-          label: const Text('Recarregar dados de demonstração'),
+          label: const Text('Recarregar dados'),
         ),
       ],
     );

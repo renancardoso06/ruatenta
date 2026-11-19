@@ -10,12 +10,9 @@ import '../models/ocorrencia.dart';
 import '../services/localizacao_service.dart';
 import '../state/ocorrencias_controller.dart';
 
-/// Funcionalidade 1: registrar um problema com categoria, descrição, local
-/// (GPS ou toque no mapa) e foto opcional. Gera o número de protocolo.
 class RegistrarScreen extends StatefulWidget {
   const RegistrarScreen({super.key, required this.onRegistrado});
 
-  /// Chamado após registrar, para levar o usuário à aba Acompanhar.
   final VoidCallback onRegistrado;
 
   @override
@@ -40,7 +37,6 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
 
   @override
   void dispose() {
-    // todo controller criado precisa ser descartado
     _descricaoCtrl.dispose();
     _enderecoCtrl.dispose();
     _mapController.dispose();
@@ -56,8 +52,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Não foi possível obter sua localização. Toque no mapa para '
-            'marcar o local.',
+            'Localização indisponível. Marque no mapa.',
           ),
         ),
       );
@@ -69,7 +64,6 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
 
   Future<void> _escolherFoto(ImageSource origem) async {
     try {
-      // reduz a imagem na captura: menos memória e armazenamento
       final arquivo = await _picker.pickImage(
         source: origem,
         maxWidth: 1024,
@@ -81,7 +75,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Não foi possível acessar a foto.')),
+        const SnackBar(content: Text('Não foi possível abrir a foto.')),
       );
     }
   }
@@ -108,7 +102,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Guarde o número do protocolo para acompanhar:'),
+              const Text('Protocolo para acompanhar:'),
               const SizedBox(height: 8),
               SelectableText(
                 nova.protocolo,
@@ -193,7 +187,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
               border: OutlineInputBorder(),
             ),
             validator: (v) => (v == null || v.trim().length < 5)
-                ? 'Descreva o problema com pelo menos 5 caracteres.'
+                ? 'Informe ao menos 5 caracteres.'
                 : null,
           ),
           const SizedBox(height: 8),
@@ -220,7 +214,8 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'br.fiap.ruatenta',
                   ),
                   MarkerLayer(
@@ -243,7 +238,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Toque no mapa para marcar o local exato. '
+            'Toque no mapa para marcar o local '
             '(${_local.latitude.toStringAsFixed(5)}, '
             '${_local.longitude.toStringAsFixed(5)})',
             style: Theme.of(context).textTheme.bodySmall,
@@ -261,7 +256,8 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
             label: const Text('Usar minha localização'),
           ),
           const SizedBox(height: 16),
-          Text('Foto (opcional)', style: Theme.of(context).textTheme.titleMedium),
+          Text('Foto (opcional)',
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           if (_fotoPath != null)
             Stack(
@@ -274,8 +270,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    // decodifica em tamanho reduzido: não carrega o bitmap
-                    // completo na memória
+                    // Carrega uma versão menor da foto para poupar memória.
                     cacheWidth: 800,
                     errorBuilder: (_, __, ___) => const SizedBox(
                       height: 180,

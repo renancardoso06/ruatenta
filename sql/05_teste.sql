@@ -1,12 +1,8 @@
---------------------------------------------------------------------------------
--- RuAtenta - Script 5: testes automatizados da camada Oracle
--- Cada bloco valida um resultado esperado e levanta erro se divergir.
---------------------------------------------------------------------------------
 SET SERVEROUTPUT ON SIZE UNLIMITED
 SET FEEDBACK OFF
 WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 
-PROMPT === 1) Registro de ocorrencia: protocolo, status e prioridade inicial
+PROMPT 1. Registro: protocolo, status e prioridade
 DECLARE
     v_id    NUMBER;
     v_prot  VARCHAR2(20);
@@ -32,7 +28,7 @@ BEGIN
 END;
 /
 
-PROMPT === 2) Validacoes de entrada
+PROMPT 2. Validacoes de entrada
 DECLARE
     v_id   NUMBER;
     v_prot VARCHAR2(20);
@@ -49,13 +45,13 @@ DECLARE
             DBMS_OUTPUT.PUT_LINE('OK  erro ' || p_codigo || ' levantado como esperado');
     END espera;
 BEGIN
-    espera(-20101, 1,   9999, 'Descricao valida');   -- cidadao inexistente
-    espera(-20102, 999, 1,    'Descricao valida');   -- categoria inexistente
-    espera(-20106, 1,   1,    'ab');                 -- descricao curta
+    espera(-20101, 1,   9999, 'Descricao valida');
+    espera(-20102, 999, 1,    'Descricao valida');
+    espera(-20106, 1,   1,    'ab');
 END;
 /
 
-PROMPT === 3) Fluxo de status e historico (trigger de auditoria)
+PROMPT 3. Status e historico
 DECLARE
     v_id     NUMBER;
     v_prot   VARCHAR2(20);
@@ -83,7 +79,6 @@ BEGIN
     END IF;
     DBMS_OUTPUT.PUT_LINE('OK  4 etapas no historico e RESOLVIDO_EM preenchido');
 
-    -- retroceder ou repetir status deve ser recusado
     BEGIN
         PKG_RUATENTA.PR_ATUALIZAR_STATUS(v_id, 'ABERTA');
         RAISE_APPLICATION_ERROR(-20900, 'Retrocesso deveria ser recusado');
@@ -97,7 +92,7 @@ BEGIN
 END;
 /
 
-PROMPT === 4) Apoio da comunidade e prioridade automatica (trigger)
+PROMPT 4. Apoios e prioridade
 DECLARE
     v_id    NUMBER;
     v_prot  VARCHAR2(20);
@@ -114,7 +109,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20900, 'Com 4 apoios deveria seguir BAIXA, esta ' || v_prio);
     END IF;
 
-    PKG_RUATENTA.PR_APOIAR_OCORRENCIA(v_id, 6, v_total);   -- 5o apoio
+    PKG_RUATENTA.PR_APOIAR_OCORRENCIA(v_id, 6, v_total);
     SELECT PRIORIDADE INTO v_prio FROM OCORRENCIAS WHERE ID = v_id;
     IF v_total <> 5 OR v_prio <> 'MEDIA' THEN
         RAISE_APPLICATION_ERROR(-20900, 'Com 5 apoios deveria ser MEDIA: ' || v_total || '/' || v_prio);
@@ -134,11 +129,10 @@ BEGIN
 END;
 /
 
-PROMPT === 5) Prazo vencido e indicadores
+PROMPT 5. Prazo e indicadores
 DECLARE
     v_id     NUMBER;
     v_prot   VARCHAR2(20);
-    v_atras  NUMBER;
     v_media  NUMBER;
     v_cur    SYS_REFCURSOR;
     v_cat    VARCHAR2(80);
@@ -156,12 +150,10 @@ DECLARE
     v_prazo  NUMBER;
     v_achou  BOOLEAN := FALSE;
 BEGIN
-    -- ocorrencia nova, dentro do prazo
     PKG_RUATENTA.PR_REGISTRAR_OCORRENCIA(3, 5, 'Bueiro entupido na avenida', -23.5, -46.6, NULL, v_id, v_prot);
     IF PKG_RUATENTA.FN_ESTA_ATRASADA(v_id) <> 0 THEN
         RAISE_APPLICATION_ERROR(-20900, 'Ocorrencia nova nao deveria estar atrasada');
     END IF;
-    -- simula 30 dias de espera (categoria Alagamento tem prazo de 3 dias)
     UPDATE OCORRENCIAS SET CRIADO_EM = SYSTIMESTAMP - INTERVAL '30' DAY WHERE ID = v_id;
     IF PKG_RUATENTA.FN_ESTA_ATRASADA(v_id) <> 1 THEN
         RAISE_APPLICATION_ERROR(-20900, 'Ocorrencia com 30 dias deveria estar atrasada');
@@ -203,4 +195,4 @@ BEGIN
 END;
 /
 
-PROMPT === Todos os testes da camada Oracle passaram
+PROMPT Todos os testes da camada Oracle passaram

@@ -3,7 +3,6 @@ import 'package:ruatenta/models/ocorrencia.dart';
 import 'package:ruatenta/state/ocorrencias_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Testa as regras de negócio do app, que espelham o pacote PKG_RUATENTA.
 void main() {
   late DateTime agora;
   late OcorrenciasController c;
@@ -25,7 +24,7 @@ void main() {
         longitude: -46.65,
       );
 
-  test('registra com protocolo, status inicial e historico', () async {
+  test('registra ocorrência com protocolo e status inicial', () async {
     final o = await nova();
     expect(o.protocolo, 'RUA-2026-000001');
     expect(o.status, StatusOcorrencia.aberta);
@@ -33,10 +32,10 @@ void main() {
     expect(o.historico.length, 1);
     final o2 = await nova(categoria: 5);
     expect(o2.protocolo, 'RUA-2026-000002');
-    expect(o2.prioridade, Prioridade.alta); // prioridade padrão da categoria
+    expect(o2.prioridade, Prioridade.alta);
   });
 
-  test('recusa descricao curta', () async {
+  test('recusa descrição curta', () async {
     expect(
       () => c.registrar(
         categoriaId: 1,
@@ -48,7 +47,7 @@ void main() {
     );
   });
 
-  test('status so avanca e preenche resolvidoEm', () async {
+  test('avança status e preenche resolvidoEm', () async {
     final o = await nova();
     expect(await c.avancarStatus(o.id), isTrue);
     expect(await c.avancarStatus(o.id), isTrue);
@@ -58,33 +57,33 @@ void main() {
     expect(fim.status, StatusOcorrencia.resolvida);
     expect(fim.resolvidoEm, isNotNull);
     expect(fim.historico.length, 4);
-    expect(await c.avancarStatus(o.id), isFalse); // já resolvida
+    expect(await c.avancarStatus(o.id), isFalse);
   });
 
-  test('prioridade sobe com apoios e apoio duplicado e recusado', () async {
-    final o = await nova(); // categoria 1: prioridade inicial BAIXA
+  test('atualiza prioridade e recusa apoio duplicado', () async {
+    final o = await nova();
     for (var i = 1; i <= 4; i++) {
       expect(await c.apoiar(o.id, apoiadorId: 'v$i'), isTrue);
     }
-    expect(c.porId(o.id)!.prioridade, Prioridade.baixa); // 4 apoios
+    expect(c.porId(o.id)!.prioridade, Prioridade.baixa);
     expect(await c.apoiar(o.id, apoiadorId: 'v5'), isTrue);
-    expect(c.porId(o.id)!.prioridade, Prioridade.media); // 5 apoios
-    expect(await c.apoiar(o.id, apoiadorId: 'v5'), isFalse); // duplicado
+    expect(c.porId(o.id)!.prioridade, Prioridade.media);
+    expect(await c.apoiar(o.id, apoiadorId: 'v5'), isFalse);
     for (var i = 6; i <= 10; i++) {
       await c.apoiar(o.id, apoiadorId: 'v$i');
     }
     expect(c.porId(o.id)!.qtdApoios, 10);
-    expect(c.porId(o.id)!.prioridade, Prioridade.alta); // 10 apoios
+    expect(c.porId(o.id)!.prioridade, Prioridade.alta);
   });
 
-  test('prazo vencido marca atrasada', () async {
-    final o = await nova(categoria: 5); // prazo de 3 dias
+  test('marca ocorrência fora do prazo', () async {
+    final o = await nova(categoria: 5);
     expect(c.estaAtrasada(o), isFalse);
     agora = agora.add(const Duration(days: 4));
     expect(c.estaAtrasada(o), isTrue);
   });
 
-  test('indicadores e tempo medio de resolucao', () async {
+  test('calcula indicadores e tempo médio de resolução', () async {
     final a = await nova(categoria: 2);
     await nova(categoria: 2);
     await c.avancarStatus(a.id);
@@ -104,7 +103,7 @@ void main() {
     expect(iluminacao.percentualResolvidas, 50);
   });
 
-  test('busca por protocolo ignora caixa e espacos', () async {
+  test('busca protocolo sem diferenciar caixa e espaços', () async {
     final o = await nova();
     expect(c.buscarPorProtocolo(' rua-2026-000001 ')?.id, o.id);
     expect(c.buscarPorProtocolo('RUA-2026-999999'), isNull);

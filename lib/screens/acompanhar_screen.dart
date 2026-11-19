@@ -6,8 +6,6 @@ import '../state/ocorrencias_controller.dart';
 import '../widgets/ocorrencia_tile.dart';
 import 'detalhe_screen.dart';
 
-/// Funcionalidade 3: acompanhar ocorrências (as minhas e as da comunidade),
-/// buscar por protocolo e ver a linha do tempo de cada uma.
 class AcompanharScreen extends StatefulWidget {
   const AcompanharScreen({super.key});
 
@@ -28,7 +26,7 @@ class _AcompanharScreenState extends State<AcompanharScreen> {
     final achada = controller.buscarPorProtocolo(_buscaCtrl.text);
     if (achada == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nenhuma ocorrência com esse protocolo.')),
+        const SnackBar(content: Text('Protocolo não encontrado.')),
       );
       return;
     }
@@ -79,7 +77,7 @@ class _AcompanharScreenState extends State<AcompanharScreen> {
               children: [
                 _Lista(
                   ocorrencias: controller.minhas,
-                  vazio: 'Você ainda não registrou nenhuma ocorrência.',
+                  vazio: 'Nenhuma ocorrência sua.',
                   controller: controller,
                 ),
                 _Lista(
@@ -119,7 +117,6 @@ class _Lista extends StatelessWidget {
         ),
       );
     }
-    // ListView.builder cria só os itens visíveis (carregamento sob demanda)
     return ListView.builder(
       padding: const EdgeInsets.only(top: 8, bottom: 16),
       itemCount: ocorrencias.length,

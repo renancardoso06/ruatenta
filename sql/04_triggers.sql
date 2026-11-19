@@ -1,12 +1,3 @@
---------------------------------------------------------------------------------
--- RuAtenta - Script 4: TRIGGERS
---
--- TRG_OCORRENCIAS_HISTORICO  -> AUDITORIA: grava em HISTORICO_OCORRENCIA a
---                               criacao da ocorrencia e toda mudanca de status.
--- TRG_OCORRENCIAS_PRIORIDADE -> AUTOMACAO: sobe a prioridade conforme o numero
---                               de apoios da comunidade (5 = MEDIA, 10 = ALTA).
---------------------------------------------------------------------------------
-
 CREATE OR REPLACE TRIGGER TRG_OCORRENCIAS_HISTORICO
 AFTER INSERT OR UPDATE OF STATUS ON OCORRENCIAS
 FOR EACH ROW

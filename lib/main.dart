@@ -15,8 +15,6 @@ class BairroEmDiaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      // create é chamado uma única vez; o Provider chama dispose() do
-      // controller quando o app é encerrado
       create: (_) =>
           OcorrenciasController(LocalOcorrenciaRepository())..iniciar(),
       child: MaterialApp(

@@ -5,8 +5,6 @@ import 'indicadores_screen.dart';
 import 'mapa_screen.dart';
 import 'registrar_screen.dart';
 
-/// Navegação principal. Constrói apenas a aba atual (e descarta as outras),
-/// para não manter quatro telas pesadas, com mapa, na memória ao mesmo tempo.
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 

@@ -28,8 +28,7 @@ IconData iconeDoStatus(StatusOcorrencia s) {
   }
 }
 
-/// Etiqueta de status. Usa ícone + texto, não só cor, para ser acessível a
-/// pessoas com daltonismo.
+/// O ícone ajuda a distinguir os status sem depender só das cores.
 class StatusChip extends StatelessWidget {
   const StatusChip({super.key, required this.status});
 

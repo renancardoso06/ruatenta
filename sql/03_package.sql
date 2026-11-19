@@ -1,26 +1,8 @@
---------------------------------------------------------------------------------
--- RuAtenta - Script 3: PACKAGE PKG_RUATENTA (rotinas PL/SQL)
---
--- Automatiza os processos centrais da solucao:
---   FN_GERAR_PROTOCOLO            -> numero unico de acompanhamento
---   PR_REGISTRAR_OCORRENCIA       -> registro de solicitacao (valida, gera
---                                    protocolo, define prioridade inicial)
---   PR_ATUALIZAR_STATUS           -> acompanhamento do atendimento (valida a
---                                    transicao e registra o historico)
---   PR_APOIAR_OCORRENCIA          -> apoio da comunidade (evita duplicidade)
---   FN_ESTA_ATRASADA              -> verifica prazo vencido da ocorrencia
---   FN_TEMPO_MEDIO_RESOLUCAO      -> indicador: dias medios ate a resolucao
---   PR_INDICADORES_POR_CATEGORIA  -> indicadores por categoria (REF CURSOR)
---   PR_OCORRENCIAS_ATRASADAS      -> lista as ocorrencias fora do prazo
---------------------------------------------------------------------------------
-
 CREATE OR REPLACE PACKAGE PKG_RUATENTA AS
 
-    -- Observacao a ser gravada no historico pela trigger no proximo UPDATE de
-    -- status. E preenchida e limpa por PR_ATUALIZAR_STATUS.
+    -- A trigger usa esta observacao durante a mudanca de status.
     G_OBSERVACAO VARCHAR2(300);
 
-    -- Apoios necessarios para subir a prioridade (usados pela trigger)
     C_APOIOS_MEDIA CONSTANT NUMBER := 5;
     C_APOIOS_ALTA  CONSTANT NUMBER := 10;
 
@@ -70,14 +52,10 @@ END PKG_RUATENTA;
 
 CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
 
-    e_nao_encontrado   EXCEPTION;
-    PRAGMA EXCEPTION_INIT (e_nao_encontrado,   -20101);
-    e_transicao        EXCEPTION;
-    PRAGMA EXCEPTION_INIT (e_transicao,        -20104);
     e_apoio_duplicado  EXCEPTION;
     PRAGMA EXCEPTION_INIT (e_apoio_duplicado,  -20105);
 
-    -- Ordem do fluxo de atendimento (indice maior = etapa mais avancada)
+    -- Permite validar a ordem das etapas.
     FUNCTION f_ordem_status (p_status IN VARCHAR2) RETURN NUMBER IS
     BEGIN
         RETURN CASE p_status
@@ -89,14 +67,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
                END;
     END f_ordem_status;
 
-    ----------------------------------------------------------------------------
     FUNCTION FN_GERAR_PROTOCOLO RETURN VARCHAR2 IS
     BEGIN
         RETURN 'RUA-' || TO_CHAR(SYSDATE, 'YYYY') || '-'
                || LPAD(SEQ_PROTOCOLO.NEXTVAL, 6, '0');
     END FN_GERAR_PROTOCOLO;
 
-    ----------------------------------------------------------------------------
     PROCEDURE PR_REGISTRAR_OCORRENCIA (
         p_cidadao_id    IN  NUMBER,
         p_categoria_id  IN  NUMBER,
@@ -143,7 +119,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
             RAISE;
     END PR_REGISTRAR_OCORRENCIA;
 
-    ----------------------------------------------------------------------------
     PROCEDURE PR_ATUALIZAR_STATUS (
         p_ocorrencia_id IN NUMBER,
         p_novo_status   IN VARCHAR2,
@@ -166,7 +141,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
         IF f_ordem_status(v_novo) IS NULL THEN
             RAISE_APPLICATION_ERROR(-20104, 'Status invalido: ' || p_novo_status);
         END IF;
-        -- so avanca no fluxo: ABERTA > EM_ANALISE > EM_ANDAMENTO > RESOLVIDA
         IF f_ordem_status(v_novo) <= f_ordem_status(v_status_atual) THEN
             RAISE_APPLICATION_ERROR(-20104,
                 'Transicao invalida: ' || v_status_atual || ' -> ' || v_novo);
@@ -188,7 +162,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
             RAISE;
     END PR_ATUALIZAR_STATUS;
 
-    ----------------------------------------------------------------------------
     PROCEDURE PR_APOIAR_OCORRENCIA (
         p_ocorrencia_id IN  NUMBER,
         p_cidadao_id    IN  NUMBER,
@@ -212,7 +185,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
                     'Cidadao ' || p_cidadao_id || ' ja apoiou a ocorrencia ' || p_ocorrencia_id);
         END;
 
-        -- a trigger TRG_OCORRENCIAS_PRIORIDADE reavalia a prioridade
         UPDATE OCORRENCIAS SET QTD_APOIOS = QTD_APOIOS + 1
          WHERE ID = p_ocorrencia_id
         RETURNING QTD_APOIOS INTO p_total_apoios;
@@ -227,7 +199,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
             RAISE;
     END PR_APOIAR_OCORRENCIA;
 
-    ----------------------------------------------------------------------------
     FUNCTION FN_ESTA_ATRASADA (
         p_ocorrencia_id IN NUMBER
     ) RETURN NUMBER
@@ -250,7 +221,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
                 'Ocorrencia ' || p_ocorrencia_id || ' nao encontrada');
     END FN_ESTA_ATRASADA;
 
-    ----------------------------------------------------------------------------
     FUNCTION FN_TEMPO_MEDIO_RESOLUCAO (
         p_categoria_id IN NUMBER DEFAULT NULL
     ) RETURN NUMBER
@@ -265,7 +235,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
         RETURN NVL(v_media, 0);
     END FN_TEMPO_MEDIO_RESOLUCAO;
 
-    ----------------------------------------------------------------------------
     PROCEDURE PR_INDICADORES_POR_CATEGORIA (
         p_cursor OUT SYS_REFCURSOR
     )
@@ -286,7 +255,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RUATENTA AS
              ORDER BY TOTAL DESC, c.NOME;
     END PR_INDICADORES_POR_CATEGORIA;
 
-    ----------------------------------------------------------------------------
     PROCEDURE PR_OCORRENCIAS_ATRASADAS (
         p_cursor OUT SYS_REFCURSOR
     )

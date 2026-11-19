@@ -7,8 +7,6 @@ import '../models/ocorrencia.dart';
 import '../state/ocorrencias_controller.dart';
 import '../widgets/chips.dart';
 
-/// Detalhe de uma ocorrência: dados, foto, linha do tempo, apoio da
-/// comunidade e (modo demonstração) simulação da resposta do órgão.
 class DetalheScreen extends StatelessWidget {
   const DetalheScreen({super.key, required this.ocorrenciaId});
 
@@ -73,8 +71,7 @@ class DetalheScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Fora do prazo: o atendimento de ${cat.nome.toLowerCase()} '
-                      'deveria ocorrer em até ${cat.prazoDias} dias.',
+                      'Prazo de ${cat.prazoDias} dias vencido.',
                     ),
                   ),
                 ],
@@ -118,10 +115,10 @@ class DetalheScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      '${o.qtdApoios} vizinho(s) apoiam esta ocorrência. '
-                      'Com ${OcorrenciasController.apoiosParaMedia} apoios a '
-                      'prioridade sobe para média e com '
-                      '${OcorrenciasController.apoiosParaAlta} para alta.',
+                      '${o.qtdApoios} apoio(s). '
+                      '${OcorrenciasController.apoiosParaMedia} elevam a '
+                      'prioridade para média; '
+                      '${OcorrenciasController.apoiosParaAlta}, para alta.',
                     ),
                   ),
                 ],
@@ -139,15 +136,14 @@ class DetalheScreen extends StatelessWidget {
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(ok
-                              ? 'Obrigado! Seu apoio foi registrado.'
-                              : 'Você já apoiou esta ocorrência.'),
+                          content: Text(
+                              ok ? 'Apoio registrado.' : 'Você já apoiou.'),
                         ),
                       );
                     },
               icon: const Icon(Icons.thumb_up_alt_outlined),
               label: Text(ehAutor
-                  ? 'Você registrou esta ocorrência'
+                  ? 'Ocorrência sua'
                   : jaApoiou
                       ? 'Você já apoiou'
                       : 'Apoiar esta ocorrência'),
@@ -175,8 +171,7 @@ class DetalheScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Em produção, quem muda o status é o órgão responsável. '
-              'Este botão simula essa resposta para a apresentação.',
+              'Status simulado para apresentação.',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],

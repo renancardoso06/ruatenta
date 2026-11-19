@@ -7,7 +7,6 @@ import '../models/ocorrencia.dart';
 import '../state/ocorrencias_controller.dart';
 import 'detalhe_screen.dart';
 
-/// Funcionalidade 2: mapa com as ocorrências da região, com filtros.
 class MapaScreen extends StatefulWidget {
   const MapaScreen({super.key});
 
@@ -23,7 +22,6 @@ class _MapaScreenState extends State<MapaScreen> {
 
   @override
   void dispose() {
-    // libera o controlador do mapa e seus recursos nativos
     _mapController.dispose();
     super.dispose();
   }
@@ -35,7 +33,7 @@ class _MapaScreenState extends State<MapaScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // limita a quantidade de marcadores desenhados ao mesmo tempo
+    // Evita desenhar pinos demais de uma vez.
     final visiveis = controller.filtradas.take(_maxMarcadores).toList();
 
     return Stack(
@@ -111,7 +109,7 @@ class _Pino extends StatelessWidget {
     final resolvida = ocorrencia.status == StatusOcorrencia.resolvida;
     return Semantics(
       button: true,
-      label: '${cat.nome}, ${ocorrencia.status.rotulo}. Toque para detalhes.',
+      label: '${cat.nome}, ${ocorrencia.status.rotulo}. Ver detalhes.',
       child: GestureDetector(
         onTap: onTap,
         child: Container(

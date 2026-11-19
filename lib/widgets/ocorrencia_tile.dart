@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../models/ocorrencia.dart';
 import 'chips.dart';
 
-/// Item de lista de ocorrência. Usado dentro de ListView.builder, que só
-/// constrói na memória os itens visíveis na tela.
 class OcorrenciaTile extends StatelessWidget {
   const OcorrenciaTile({
     super.key,
