@@ -1,0 +1,63 @@
+digraph DER {
+  graph [rankdir=LR, fontname="Arial", nodesep=0.55, ranksep=1.1, pad=0.3, bgcolor="white", splines=true];
+  node  [shape=plain, fontname="Arial", fontsize=11];
+  edge  [fontname="Arial", fontsize=10, color="#37474F", arrowhead=crow, arrowtail=tee, dir=both];
+
+  ORGAOS [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#00695C"><font color="white"><b>ORGAOS</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(10)</td></tr>
+    <tr><td align="left">NOME  VARCHAR2(120)  <i>UQ</i></td></tr></table>>];
+
+  CATEGORIAS [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#00695C"><font color="white"><b>CATEGORIAS</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(10)</td></tr>
+    <tr><td align="left"><b>FK</b> ORGAO_ID  NUMBER(10)</td></tr>
+    <tr><td align="left">NOME  VARCHAR2(80)  <i>UQ</i></td></tr>
+    <tr><td align="left">PRAZO_DIAS  NUMBER(3)</td></tr>
+    <tr><td align="left">PRIORIDADE_PADRAO  VARCHAR2(10)</td></tr></table>>];
+
+  CIDADAOS [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#00695C"><font color="white"><b>CIDADAOS</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(10)</td></tr>
+    <tr><td align="left">NOME  VARCHAR2(120)</td></tr>
+    <tr><td align="left">BAIRRO  VARCHAR2(80)</td></tr>
+    <tr><td align="left">CRIADO_EM  TIMESTAMP</td></tr></table>>];
+
+  OCORRENCIAS [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#C62828"><font color="white"><b>OCORRENCIAS</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(19)  <i>identity</i></td></tr>
+    <tr><td align="left">PROTOCOLO  VARCHAR2(20)  <i>UQ</i></td></tr>
+    <tr><td align="left"><b>FK</b> CIDADAO_ID  NUMBER(10)</td></tr>
+    <tr><td align="left"><b>FK</b> CATEGORIA_ID  NUMBER(10)</td></tr>
+    <tr><td align="left">DESCRICAO  VARCHAR2(500)</td></tr>
+    <tr><td align="left">LATITUDE / LONGITUDE  NUMBER(9,6)</td></tr>
+    <tr><td align="left">ENDERECO  VARCHAR2(250)</td></tr>
+    <tr><td align="left">STATUS  VARCHAR2(15)</td></tr>
+    <tr><td align="left">PRIORIDADE  VARCHAR2(10)</td></tr>
+    <tr><td align="left">QTD_APOIOS  NUMBER(6)</td></tr>
+    <tr><td align="left">CRIADO_EM / RESOLVIDO_EM  TIMESTAMP</td></tr></table>>];
+
+  HISTORICO [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#00695C"><font color="white"><b>HISTORICO_OCORRENCIA</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(19)  <i>identity</i></td></tr>
+    <tr><td align="left"><b>FK</b> OCORRENCIA_ID  NUMBER(19)</td></tr>
+    <tr><td align="left">STATUS_ANTIGO  VARCHAR2(15)</td></tr>
+    <tr><td align="left">STATUS_NOVO  VARCHAR2(15)</td></tr>
+    <tr><td align="left">OBSERVACAO  VARCHAR2(300)</td></tr>
+    <tr><td align="left">ALTERADO_EM  TIMESTAMP</td></tr></table>>];
+
+  APOIOS [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#00695C"><font color="white"><b>APOIOS</b></font></td></tr>
+    <tr><td align="left"><b>PK</b> ID  NUMBER(19)  <i>identity</i></td></tr>
+    <tr><td align="left"><b>FK</b> OCORRENCIA_ID  NUMBER(19)</td></tr>
+    <tr><td align="left"><b>FK</b> CIDADAO_ID  NUMBER(10)</td></tr>
+    <tr><td align="left">CRIADO_EM  TIMESTAMP</td></tr>
+    <tr><td align="left"><i>UQ (OCORRENCIA_ID, CIDADAO_ID)</i></td></tr></table>>];
+
+  ORGAOS -> CATEGORIAS [label="1 : N", dir=both, arrowtail=tee, arrowhead=crow];
+  CATEGORIAS -> OCORRENCIAS [label="1 : N"];
+  CIDADAOS -> OCORRENCIAS [label="1 : N"];
+  OCORRENCIAS -> HISTORICO [label="1 : N"];
+  OCORRENCIAS -> APOIOS [label="1 : N"];
+  CIDADAOS -> APOIOS [label="1 : N"];
+}
