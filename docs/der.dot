@@ -1,5 +1,5 @@
 digraph DER {
-  graph [rankdir=LR, fontname="Arial", nodesep=0.55, ranksep=1.1, pad=0.3, bgcolor="white", splines=true];
+  graph [rankdir=TB, fontname="Arial", nodesep=0.45, ranksep=0.7, pad=0.3, bgcolor="white", splines=true];
   node  [shape=plain, fontname="Arial", fontsize=11];
   edge  [fontname="Arial", fontsize=10, color="#37474F", arrowhead=crow, arrowtail=tee, dir=both];
 
@@ -30,12 +30,14 @@ digraph DER {
     <tr><td align="left"><b>FK</b> CIDADAO_ID  NUMBER(10)</td></tr>
     <tr><td align="left"><b>FK</b> CATEGORIA_ID  NUMBER(10)</td></tr>
     <tr><td align="left">DESCRICAO  VARCHAR2(500)</td></tr>
-    <tr><td align="left">LATITUDE / LONGITUDE  NUMBER(9,6)</td></tr>
+    <tr><td align="left">LATITUDE  NUMBER(9,6)</td></tr>
+    <tr><td align="left">LONGITUDE  NUMBER(9,6)</td></tr>
     <tr><td align="left">ENDERECO  VARCHAR2(250)</td></tr>
     <tr><td align="left">STATUS  VARCHAR2(15)</td></tr>
     <tr><td align="left">PRIORIDADE  VARCHAR2(10)</td></tr>
     <tr><td align="left">QTD_APOIOS  NUMBER(6)</td></tr>
-    <tr><td align="left">CRIADO_EM / RESOLVIDO_EM  TIMESTAMP</td></tr></table>>];
+    <tr><td align="left">CRIADO_EM  TIMESTAMP</td></tr>
+    <tr><td align="left">RESOLVIDO_EM  TIMESTAMP  <i>(nulo até resolver)</i></td></tr></table>>];
 
   HISTORICO [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
     <tr><td bgcolor="#00695C"><font color="white"><b>HISTORICO_OCORRENCIA</b></font></td></tr>

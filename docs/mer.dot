@@ -1,5 +1,5 @@
 graph MER {
-  graph [rankdir=LR, fontname="Arial", nodesep=0.6, ranksep=0.9, pad=0.3, bgcolor="white"];
+  graph [rankdir=TB, fontname="Arial", nodesep=0.5, ranksep=0.7, pad=0.3, bgcolor="white"];
   node  [fontname="Arial", fontsize=12];
   edge  [fontname="Arial", fontsize=11, color="#37474F"];
 
