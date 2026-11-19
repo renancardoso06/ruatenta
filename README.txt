@@ -19,7 +19,7 @@ Precisa do Flutter 3.27 ou superior e de um emulador ou celular Android.
   flutter test
 
 Banco Oracle
-Fica na pasta sql/. Com um Oracle XE 21 rodando (usamos a imagem gvenzl/oracle-xe:21-slim no Docker, banco XEPDB1) e o usuário RUATENTA_APP criado, rode sql/00_run_all.sql. Ele cria as tabelas, carrega os dados iniciais, compila o package PKG_RUATENTA e os triggers e executa os testes.
+Fica na pasta sql/. Com um Oracle XE 21 rodando (usamos a imagem gvenzl/oracle-xe:21-slim no Docker, banco XEPDB1), rode sql/00_run_all.sql conectado ao usuário desejado. O script não cria o usuário nem troca de schema: cria os objetos no schema do usuário conectado. Portanto, usando system/$ORACLE_PASSWORD, os objetos ficam em SYSTEM; para usar RUATENTA_APP, conecte-se como esse usuário antes de executar. O script apaga e recria as tabelas e a sequência, carrega os dados iniciais, compila o package PKG_RUATENTA e os triggers e executa os testes.
 
 Tecnologias e por que escolhemos
 - Flutter: um código só para Android e iOS, com interface Material 3.
@@ -45,3 +45,4 @@ Limitações
 Estrutura
 lib/ (models, data, state, services, screens, widgets), test/, sql/ e docs/
 Descrição das classes e métodos, MER e DER: docs/RuAtenta_Documentacao.pdf
+Detalhes sobre o schema usado pelo script Oracle: docs/Oracle.md
